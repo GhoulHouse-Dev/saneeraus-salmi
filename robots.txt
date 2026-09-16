@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Production note: the landing page ships with meta robots noindex until the final campaign domain is confirmed.
