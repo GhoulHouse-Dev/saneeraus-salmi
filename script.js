@@ -48,7 +48,16 @@ function setStatus(element, message, type = '') {
   element.className = `form-status ${type}`.trim();
 }
 
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
 async function postLead(payload) {
+  if (config.demoMode) {
+    await wait(Number(config.demoDelayMs) || 850);
+    return { ok: true, demo: true };
+  }
+
   const response = await fetch('/api/lead', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -88,11 +97,17 @@ function bindLeadForm(form) {
     setStatus(status, '');
 
     try {
-      await postLead(payload);
-      track('lead_submit', { service: payload.service, form: payload.source });
+      const result = await postLead(payload);
+      track('lead_submit', { service: payload.service, form: payload.source, demo: Boolean(result.demo) });
       trackMeta('Lead', { content_name: serviceLabels[payload.service] || payload.service });
       form.reset();
-      setStatus(status, 'Kiitos — tarjouspyyntö vastaanotettu. Otamme yhteyttä mahdollisimman pian.', 'success');
+      setStatus(
+        status,
+        result.demo
+          ? 'Kiitos — lomake toimii. Tämä on preview-versio, joten tietoja ei vielä lähetetä eteenpäin.'
+          : 'Kiitos — tarjouspyyntö vastaanotettu. Otamme yhteyttä mahdollisimman pian.',
+        'success'
+      );
       status.focus?.();
     } catch (error) {
       setStatus(status, `${error.message} Voit myös soittaa: 045 7830 5122.`, 'error');
