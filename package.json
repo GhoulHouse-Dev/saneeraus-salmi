@@ -1,14 +1,8 @@
 {
-  "name": "saneeraus-salmi-lead-page",
+  "name": "eikenttaa-storefront-preview",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
-  "scripts": {
-    "test": "node --test tests/*.test.mjs",
-    "verify": "node scripts/verify.mjs && node --check script.js && node --check api/lead.js && node --check lib/lead-validation.js && npm test",
-    "build": "npm run verify"
-  }
+  "engines": { "node": ">=20" },
+  "scripts": { "build": "echo EI-KENTTAA-static-preview" }
 }
